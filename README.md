@@ -38,6 +38,84 @@
 
 **Platform support** = Spanning Cloud, on-premise, Kubernetes, Mesos, and more
 
+---------------------------------------------------------------------------------------------------------------------
+
+<h1>Architecture des applications</h1>
+<h1>Présentation de la solution ISTIO</h1>
+
+## Contexte et limites actuelles
+<p>Aujourd’hui avec l’expansion du cloud, de plus en plus d’entreprises se tournent vers des architecture microservices, abandonnant le développement d’application centralisant la majeure partie de leur service. Que cela soit pour faire migrer une architecture monologique, ou développer une nouvelle application, la vision d’un réseau de microservices attire de plus en plus. Comment celle-ci fonctionne t’elle et est-ce là le futur de toutes les applications ?</p>
+
+<p>Une architecture microservices, cherche à séparer les différentes fonctionnalités d’une application généralement d’envergure, afin de mieux contrôler ses différents aspects. Prenons pour exemple une application de vente en ligne : Afin qu’un consommateur achète un article, l’application doit vérifier que celui-ci est en stock. Le service qui gère la base de données doit donc communiquer à la page web l’information. Celle-ci doit par la suite envoyer l’information au service qui gère le panier de l’utilisateur. L’application peut aussi intégrer un service de recommandation, qui lui aussi devra communiquer avec la base de données. Nous comprenons par cet exemple, que les applications d’envergure, fonctionnent toutes aujourd’hui avec des architectures microservices. Leur fonctionnement serait impossible dans un code regroupé.</p>
+
+<p>Cette architecture microservices possède deux grands avantages :  La gestion est meilleure, en cas de panne ce n’est pas l’ensemble de l’application qui tombe mais seulement le service et ceux qui y sont associés. Et les différents services sont généralement l’œuvre d’équipes métiers différents qui peuvent donc plus facilement développer de manière autonome leur fonctionnalité.</p>
+
+<p>Mais ce type d’architecture connait aussi ces limites : L’ensemble de ces services est généralement développé de manière autonomes, et l’ensemble des règles de communications avec les autres services qui y sont liés sont fixes et ont été développé dans le code de chaque fonctionnalité. Cela rend extrêmement rigide l’évolution de manière générale, entrainant des erreurs, des bugs et des ralentissements. En effet les règles développées un an auparavant ont ne sont plus d’actualité aujourd’hui et force les équipes à modifier le code. De plus, au fil du temps des nouveaux services sont ajoutés, avec de nouvelles règles, et cet ajout peut totalement déséquilibrer la charge sur certaines fonctionnalités. Cela créer des goulots d’étranglement ou les données sont traitée de manière inefficace ralentissant la totalité du système. Pire encore, dans des applications d’une taille colossale ou des services sont régulièrement ajoutés, comment trouver la source du problème ? Cela révèle de l’impossible ou de nombreux services appartenant à des corps de métiers différents communiques entre eux.</p>
+<p>Les architectures microservices peuvent nous le voyons, devenir difficilement gérable sans les bons outils et les bonnes méthodes. Partant en plus du principe que ces applications sont généralement très utilisées et donc très importantes, des ralentissements ou des crashs ferait perdre des sommes considérables d’argents au compagnies propriétaires. C’est dans ce contexte et face à ce défi qu’entre en jeu le concept de maillage de service.</p>
+
+## Présentation des maillages de services
+<p>La technologie des service mesh ou maillages de services, est apparue ces dernières années pour répondre aux problèmes naissant des architectures de microservices de plus en plus volumineuses. Cette technologie ou ce concept, cherche à améliorer le contrôle de ces imposants réseaux en en contrôlant la transmission des données. Ce contrôle va chercher à être effectué entre les différents services afin d’optimiser leurs échanges en enlevant cette responsabilité de traitement des données présent dans le code de chaque fonctionnalité, pour la déplacer. Les services mesh, ont pour objectif d’être aisément mis en place sans avoir besoin de modifier le code des services du réseau, ou très peu. Nous l’aurons compris, un maillage de service est une méthode de gestion d’infrastructure plus vaste utilisant les microservices, et dont le but est d’en réduire la complexité en apportant une vision d’ensemble afin de gérer au mieux l’architecture.</p>
+
+<p>Pour approfondir son fonctionnement, un maillage de service est l’ajout d’une couche applicative dédié au traitement au transport et à la gestion en règle générale des données entre les différents services souvent dépendants les uns des autres. L’ajout d’une couche dédié permet comme expliqué plus haut, de déplacer cette responsabilité de traitement propre à chaque service, afin de pouvoir plus facilement modifier les règles de transmission de données.</p>
+
+<p>L’ajout de cette couche dédiée se fait par l’ajout de proxy communément appelé « sidecar ». Ce diminutif, se rapporte au fait que pour chaque service présent, un proxy de type sidecar y sera rattaché.</p>
+
+<img src="https://www.redhat.com/cms/managed-files/service-mesh-1680.png"  />
+
+<p>Un proxy « sidecar », fonctionne à coté d’un service et non dans celui-ci. Ce type de proxy est la base des maillages de services. En effet, chaque proxy va contrôler l’ensemble des données qui transitent entre leur service et le reste du réseau. Permettant d’y ajouter un ensemble de règles assouplissant drastiquement leur modification.</p>
+
+<p>L’ajout de ces proxys, permet de récolter des données sur l’ensemble du réseau qui sont ensuite envoyé et traité afin d’avoir une vision d’ensemble sur le fonctionnement de l’architecture. Cette vision, est rendu possible par différentes fonctionnalités propres au service mesh, aboutissant à des graphiques, et un ensemble de statistiques variés sur l’état du réseau et des échanges. Il devient alors simple, de voir, le temps de transition des données, le temps de traitement, les erreurs potentiels et remonter plus facilement aux différentes sources de problèmes.</p>
+
+<p>Avec l’évolution constante d’architectures conséquentes, la vision globale détaillée et statistique qu’apporte un maillage de service, deviens indispensable. Autre le fait d’éviter les crash, bugs et ralentissements important, cette vision permet notamment d’améliorer la qualité du système, en permettant l’optimisation du réseau, assurant l’efficacité et la fiabilité en continu.</p>
+
+<img src="https://www.nginx.com/wp-content/uploads/2019/02/service-mesh-generic-topology_social.png"  />
+
+Maintenant que nous avons décris en généralisant le rôle d’un maillage de service, nous allons voir l’ensemble des atouts et le fonctionnement dont notamment :
+* La découverte de service
+* L’équilibrage
+* Le chiffrement
+* L’observabilité
+* La traçabilité
+* L’authentification
+* La prise en charge du modèle de disjoncteur
+* La mise en place de tests
+* Les déploiement canaris
+* La limitation du débit
+
+## Fonctionnement et approfondissement
+
+### a.	La découverte de service
+
+Lorsqu’une instance de service souhaite interagir avec l’instance d’un autre service, celle-ci doit chercher et « découvrir » sur le réseau, une instance disponible et fonctionnelle répondant à son besoin. Pour ce faire, l’instance effectue généralement une recherche DNS à l’infrastructure d’orchestration, qui conserve une liste des services disponibles en fonction de leur type.
+
+### b.	L’équilibrage
+
+L’équilibrage de charge est un ajout qu’apporte une la majorité des Framework d’orchestrations de conteneur, tel Kubernets au niveau de la couche réseau de transport (4). Les maillages de services quant à eux, affine cette idée de loadBalancer au niveau de la couche d’application (7), avec de meilleurs algorithmes et une meilleure gestion des trafics à fort volume de données.
+
+### c.	Le chiffrement
+
+Le maillage de service assure le chiffrement et le chiffrement des données entre les services, permettant de soulager ses derniers de cette charge. Un maillage de service va également chercher à optimiser les échanges en utilisant en priorité les connexions déjà existantes. L’implémentation la plus rependue est l’utilisation d’infrastructure PKI.
+
+### d.	L’observabilité
+
+### e.	La traçabilité
+
+### f.	L’authentification
+
+Les maillages de service permettent une authentification hors service, n’autorisant ainsi que l’envoi de requêtes valides, faisant ainsi gagner du temps de traitement aux différentes instances.
+
+### g.	La prise en charge du modèle de disjoncteur
+
+### h.	La mise en place de tests
+
+### i.	Les déploiement canaris
+
+### j.	La limitation du débit
+
+
+## La solution Istio
+
+
 <a name="objectifs"></a>
 ## 2) Objectifs du tutoriel - contexte, description et résultats/connaisses  attendus après  l’exécution
 
